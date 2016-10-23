@@ -3,12 +3,11 @@ var fs = require('fs');
 var path = require("path");
 var app = express();
 
-app.configure(function(){
-    app.use(app.router);
-});
+var routes = require('./routes/index');
+var room = require('./routes/room');
 
 var key = fs.readFileSync('keys/newkey.pem');
-var cert = fs.readFileSync('keys/cert.pem')
+var cert = fs.readFileSync('keys/cert.pem');
 var https_options = {
     key: key,
     cert: cert
@@ -20,10 +19,12 @@ var port = process.env.PORT || 443;
 server.listen(port);
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-app.get('/', function(req, res) {
-	res.sendfile(__dirname + '/index.html');
-});
+//加载主页模块
+app.use('/', routes);
+app.use('/room', room);
 
 SkyRTC.rtc.on('new_connect', function(socket) {
 	console.log('创建新连接');
