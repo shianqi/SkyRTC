@@ -1,11 +1,11 @@
 var express = require('express');
 var fs = require('fs');
-
+var path = require("path");
 var app = express();
+
 app.configure(function(){
     app.use(app.router);
 });
-
 
 var key = fs.readFileSync('keys/newkey.pem');
 var cert = fs.readFileSync('keys/cert.pem')
@@ -14,14 +14,9 @@ var https_options = {
     cert: cert
 };
 var server = require('https').createServer(https_options,app);
-
 var SkyRTC = require('skyrtc').listen(server);
-var path = require("path");
 
-
-
-
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 443;
 server.listen(port);
 
 app.use(express.static(path.join(__dirname, 'public')));
