@@ -2,11 +2,16 @@
   "name": "SkyRTC-demo",
   "description": "A simple SkyRTC demo",
   "scripts": {
-    "start": "node server.js"
+    "start": "npm run mongod & npm run server",
+    "server": "node server.js",
+    "mongod": "mongod --dbpath D://mongodb"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
     "ejs": "^2.5.2",
     "express": "^4.14.0",
+    "express-session": "^1.14.1",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
     "node-uuid": ">= 1.4.1",
