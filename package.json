@@ -7,6 +7,7 @@
     "mongod": "mongod --dbpath D://mongodb"
   },
   "dependencies": {
+    "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.2",
@@ -14,6 +15,7 @@
     "express-session": "^1.14.1",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
+    "mongoose": "^4.6.5",
     "node-uuid": ">= 1.4.1",
     "skyrtc": ">= 0.0.0",
     "ws": ">= 0.0.0"

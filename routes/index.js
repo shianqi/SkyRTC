@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var router = express.Router();
 var path = require('path');
+var User = require('../models/user');
 
 router.use(session({
     secret: 'secret',
@@ -13,7 +14,7 @@ router.use(session({
 }));
 
 router.get('/', function(req, res) {
-    res.render('index');
+    res.render('index',{'message':''});
 });
 
 router.get('/room', function(req, res) {
@@ -25,16 +26,44 @@ router.get('/room', function(req, res) {
 });
 
 router.post('/login', function (req, res) {
-    var user = {
-        username:'admin',
-        password:'admin'
-    };
-    if(req.body.username==user.username&&req.body.password==user.password){
-        req.session.user = user;
-        res.redirect('/room');
-    }else{
-        res.redirect('/');
-    }
+    User.findByUsername(req.body.username,function (err,date) {
+        console.log(req.body.username);
+        if(err){
+            console.log(err);
+            res.render('error',{'message':err})
+        }else{
+            console.log(JSON.stringify(date));
+            if(date==null){
+                res.render('index',{'message':'用户名或密码错误！'});
+            }else if(req.body.username==date.username&&req.body.password==date.password){
+                req.session.user = date;
+                res.redirect('/room');
+            }else{
+                res.redirect('/');
+            }
+        }
+    });
+});
+
+router.get('/addAdmin', function (req, res) {
+    res.render('addAdmin');
+});
+
+router.post('/addAdmin', function (req, res) {
+    var user = new User({
+        username: req.body.username,
+        password: req.body.password,
+        nickname: req.body.nickname,
+        type: req.body.type
+    });
+    user.save(function (err) {
+        if (err){
+            console.log(err);
+            res.render('state',{state:'添加用户失败！'});
+        }else{
+            res.render('state',{state:'添加用户成功！'});
+        }
+    });
 });
 
 //判断用户是否登陆

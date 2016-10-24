@@ -5,6 +5,8 @@ var app = express();
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var cookieParser = require('cookie-parser');
+var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 
 var key = fs.readFileSync('keys/newkey.pem');
 var cert = fs.readFileSync('keys/cert.pem');
@@ -27,6 +29,9 @@ app.all('*', function(req, res, next) {
     res.header("X-Powered-By",' 3.2.1');
     next();
 });
+
+//链接mongodb数据库
+mongoose.connect('mongodb://localhost/skyRtc');
 
 //配置公共资源文件夹
 app.use(express.static(path.join(__dirname, 'public')));
