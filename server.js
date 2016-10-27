@@ -4,6 +4,7 @@ var path = require("path");
 var app = express();
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
+var size = require('./routes/roomList');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');

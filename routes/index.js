@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var router = express.Router();
 var path = require('path');
+var room = require('./roomList');
 var User = require('../models/user');
 
 router.use(session({
@@ -9,7 +10,7 @@ router.use(session({
     resave: true,
     saveUninitialized: false,
     cookie:{
-        maxAge: 1000*60*10 //cookie有效时间10min
+        maxAge: 1000*60*100 //cookie有效时间10min
     }
 }));
 
@@ -25,21 +26,36 @@ router.get('/room', function(req, res) {
     }
 });
 
+router.get('/roomList', function (req, res) {
+    if(haveLogined(req.session.user)){
+        res.render('roomList',{roomList:room.getRoomList()});
+    }else{
+        res.redirect('/');
+    }
+});
+
+router.post('/enterRoom', function (req, res) {
+    if(haveLogined(req.session.user)){
+        console.log(req.session.user.username+"进入"+req.body.roomNumber);
+        room.enterRoom(req.body.roomNumber,req.session.user.username);
+        res.redirect('/room#'+req.body.roomNumber);
+    }else{
+        res.redirect('/');
+    }
+});
+
 router.post('/login', function (req, res) {
     User.findByUsername(req.body.username,function (err,date) {
-        console.log(req.body.username);
         if(err){
-            console.log(err);
             res.render('error',{'message':err})
         }else{
-            console.log(JSON.stringify(date));
             if(date==null){
                 res.render('index',{'message':'用户名或密码错误！'});
             }else if(req.body.username==date.username&&req.body.password==date.password){
                 req.session.user = date;
-                res.redirect('/room');
+                res.redirect('/roomList');
             }else{
-                res.redirect('/');
+                res.render('index',{'message':'用户名或密码错误！'});
             }
         }
     });
@@ -58,7 +74,6 @@ router.post('/addAdmin', function (req, res) {
     });
     user.save(function (err) {
         if (err){
-            console.log(err);
             res.render('state',{state:'添加用户失败！'});
         }else{
             res.render('state',{state:'添加用户成功！'});
