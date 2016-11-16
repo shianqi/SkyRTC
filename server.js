@@ -3,11 +3,16 @@ var fs = require('fs');
 var path = require("path");
 var app = express();
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
-var size = require('./routes/roomList');
+
+var roomList = require('./routes/roomList');
 var cookieParser = require('cookie-parser');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+
+var session = require('express-session');
+
+var room = require('./routes/roomList');
+var User = require('./models/user');
 
 var key = fs.readFileSync('keys/newkey.pem');
 var cert = fs.readFileSync('keys/cert.pem');
@@ -48,18 +53,17 @@ app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-//加载主页模块
-app.use('/', routes);
-
 SkyRTC.rtc.on('new_connect', function(socket) {
     console.log('创建新连接');
 });
 
 SkyRTC.rtc.on('remove_peer', function(socketId) {
+    roomList.leaveRoom(socketId);
     console.log(socketId + "用户离开");
 });
 
 SkyRTC.rtc.on('new_peer', function(socket, room) {
+    roomList.enterRoomSocket(room, socket.id);
     console.log("新用户" + socket.id + "加入房间" + room);
 });
 
@@ -82,3 +86,88 @@ SkyRTC.rtc.on('answer', function(socket, answer) {
 SkyRTC.rtc.on('error', function(error) {
     console.log("发生错误：" + error.message);
 });
+
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: false,
+    cookie:{
+        maxAge: 1000*60*100 //cookie有效时间10min
+    }
+}));
+
+app.get('/', function(req, res) {
+    res.render('index',{'message':''});
+});
+
+app.get('/room', function(req, res) {
+    if(haveLogined(req.session.user)){
+        res.render('room');
+    }else{
+        res.redirect('/');
+    }
+});
+
+app.get('/roomList', function (req, res) {
+    if(haveLogined(req.session.user)){
+        res.render('roomList',{roomList:SkyRTC.rtc.rooms});
+    }else{
+        res.redirect('/');
+    }
+});
+
+app.post('/enterRoom', function (req, res) {
+    if(haveLogined(req.session.user)){
+        console.log(req.session.user.username+"进入"+req.body.roomNumber);
+        room.enterRoomHttp(req.body.roomNumber,req.session.user.username);
+        res.redirect('/room#'+req.body.roomNumber);
+    }else{
+        res.redirect('/');
+    }
+});
+
+app.post('/login', function (req, res) {
+    User.findByUsername(req.body.username,function (err,date) {
+        if(err){
+            res.render('error',{'message':err})
+        }else{
+            if(date==null){
+                res.render('index',{'message':'用户名或密码错误！'});
+            }else if(req.body.username==date.username&&req.body.password==date.password){
+                req.session.user = date;
+                res.redirect('/roomList');
+            }else{
+                res.render('index',{'message':'用户名或密码错误！'});
+            }
+        }
+    });
+});
+
+app.get('/addAdmin', function (req, res) {
+    res.render('addAdmin');
+});
+
+app.post('/addAdmin', function (req, res) {
+    var user = new User({
+        username: req.body.username,
+        password: req.body.password,
+        nickname: req.body.nickname,
+        type: req.body.type
+    });
+    user.save(function (err) {
+        if (err){
+            res.render('state',{state:'添加用户失败！'});
+        }else{
+            res.render('state',{state:'添加用户成功！'});
+        }
+    });
+});
+
+//判断用户是否登陆
+var haveLogined = function (user) {
+    if(typeof(user) == "undefined"){
+        return false;
+    }else{
+        return true;
+    }
+};

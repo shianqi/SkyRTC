@@ -4,21 +4,23 @@
 var express = require('express');
 var router = express.Router();
 var roomList = [];
+var lastUser = null;
 
-router.getRoomList = function () {
-    return roomList;
+
+router.enterRoomHttp = function (roomNumber, username) {
+    lastUser = username;
 };
 
-router.enterRoom = function (roomNumber, username) {
+router.enterRoomSocket = function (roomNumber, socketId) {
+
     if(typeof(roomList[roomNumber]) == "undefined"){
         roomList[roomNumber] = [];
     }
-    roomList[roomNumber].push({username:username});
-    console.log(roomList);
+    roomList[roomNumber].push({username:lastUser,socketId:socketId});
 };
 
-router.leaveRoom = function (roomNumber, username) {
-    roomList[roomNumber].pop({username:username});
+router.leaveRoom = function (socketId) {
+
 };
 
 module.exports = router;

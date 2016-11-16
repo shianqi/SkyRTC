@@ -1,4 +1,5 @@
 /**
+ *
  * Created by killer on 2016/10/23.
  */
 var videos = document.getElementById("videos");
@@ -94,6 +95,8 @@ rtc.on("connected", function(socket) {
         "video": true,
         "audio": true
     });
+    //创建成功ajax将socketid发送回服务器
+    console.log(rtc.me);
 });
 //创建本地视频流成功
 rtc.on("stream_created", function(stream) {

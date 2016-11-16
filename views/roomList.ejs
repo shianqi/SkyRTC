@@ -13,18 +13,14 @@
     <input type="submit" value="进入">
 </form>
 <ul>
-    <%
-    for(var i=0;i<roomList.length;i++){
-        if(typeof(roomList[i])!= "undefined")
-        {
-        %>
+    <%for(var room in roomList){%>
         <li>
-            <%=i+": "+roomList[i].length%>
+        <%=room%>:&nbsp;
+        <%for(var i=0;i<roomList[room].length;i++){%>
+            <%=roomList[room][i].id%>
+        <%}%>
         </li>
-        <%
-        }
-    };
-    %>
+    <%}%>
 </ul>
 </body>
 </html>
