@@ -17,7 +17,8 @@
         <li>
         <%=room%>:&nbsp;
         <%for(var i=0;i<roomList[room].length;i++){%>
-            <%=roomList[room][i].id%>
+            <%=roomList[room][i].username%>
+            (<%=roomList[room][i].ip%>)
         <%}%>
         </li>
     <%}%>

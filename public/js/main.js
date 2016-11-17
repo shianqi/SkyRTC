@@ -97,6 +97,12 @@ rtc.on("connected", function(socket) {
     });
     //创建成功ajax将socketid发送回服务器
     console.log(rtc.me);
+    $.post(
+        "connectSuccess",
+        {
+            socketId: rtc.me
+        }
+    );
 });
 //创建本地视频流成功
 rtc.on("stream_created", function(stream) {

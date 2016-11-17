@@ -97,7 +97,11 @@ app.use(session({
 }));
 
 app.get('/', function(req, res) {
-    res.render('index',{'message':''});
+    if(haveLogined(req.session.user)){
+        res.redirect('/roomList');
+    }else{
+        res.render('index',{'message':''});
+    }
 });
 
 app.get('/room', function(req, res) {
@@ -161,6 +165,21 @@ app.post('/addAdmin', function (req, res) {
             res.render('state',{state:'添加用户成功！'});
         }
     });
+});
+
+app.post('/connectSuccess', function (req, res) {
+    for(var room in SkyRTC.rtc.rooms){
+        for(var i=0; i<SkyRTC.rtc.rooms[room].length;i++){
+            console.log("room: "+SkyRTC.rtc.rooms[room][i].id);
+            if(SkyRTC.rtc.rooms[room][i].id == req.body.socketId){
+                SkyRTC.rtc.rooms[room][i].ip = req.ip;
+                SkyRTC.rtc.rooms[room][i].username = req.session.user.username;
+            }
+        }
+    }
+    console.log(SkyRTC.rtc.rooms);
+    res.write("success");
+    res.end();
 });
 
 //判断用户是否登陆
