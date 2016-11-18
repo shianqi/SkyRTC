@@ -1,0 +1,13 @@
+body {
+    padding-top: 50px;
+    background: #efefef;
+}
+.starter-template {
+    padding: 20px 15px;
+}
+
+.roomcard-joinroom{
+    font-size: 15px;
+    line-height: 24px;
+    text-align: right;
+}
