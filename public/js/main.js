@@ -96,7 +96,6 @@ rtc.on("connected", function(socket) {
         "audio": true
     });
     //创建成功ajax将socketid发送回服务器
-    console.log(rtc.me);
     $.post(
         "connectSuccess",
         {

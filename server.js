@@ -122,7 +122,6 @@ app.get('/roomList', function (req, res) {
 
 app.post('/enterRoom', function (req, res) {
     if(haveLogined(req.session.user)){
-        console.log(req.session.user.username+"进入"+req.body.roomNumber);
         room.enterRoomHttp(req.body.roomNumber,req.session.user.username);
         res.redirect('/room#'+req.body.roomNumber);
     }else{
@@ -170,14 +169,12 @@ app.post('/addAdmin', function (req, res) {
 app.post('/connectSuccess', function (req, res) {
     for(var room in SkyRTC.rtc.rooms){
         for(var i=0; i<SkyRTC.rtc.rooms[room].length;i++){
-            console.log("room: "+SkyRTC.rtc.rooms[room][i].id);
             if(SkyRTC.rtc.rooms[room][i].id == req.body.socketId){
                 SkyRTC.rtc.rooms[room][i].ip = req.ip;
                 SkyRTC.rtc.rooms[room][i].username = req.session.user.username;
             }
         }
     }
-    console.log(SkyRTC.rtc.rooms);
     res.write("success");
     res.end();
 });
