@@ -19,16 +19,11 @@ $(document).on("click touchend", ".gridly .brick", function(event) {
     return $('.gridly').gridly('layout');
 });
 
-$('#msgIpt').on('click touchend', function (event) {
-    //$('#msgIpt').focus();
-});
-
 window.onload = function() {
     onResize();
 };
 var onResize = function(){
     var winWidth = document.body.clientWidth;
-    var gut = (winWidth-30)
     var col = parseInt((winWidth-10)/300);
 
     $('.gridly').gridly({
@@ -44,4 +39,5 @@ window.onresize = function(){
     }
     timer = setTimeout(onResize,200);
 };
+
 

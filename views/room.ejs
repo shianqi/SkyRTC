@@ -48,15 +48,17 @@
 <div class="starter-template">
     <div id="videos" class="gridly">
         <div id="chat">
+            <div class="chatTitle">消息框</div>
             <div class="msgs" id="msgs"></div>
             <input type="file" id="fileIpt" class="fileIpt">
-            <button id="sendFileBtn" class="sendFileBtn">发送文件</button>
-            <input type="text" id="msgIpt" class="msgIpt">
+            <label id="fileIptLabel" for="fileIpt">选择文件</label>
+            <button id="sendFileBtn" class="sendFileBtn">Send</button>
+            <input placeholder="请输入文字.." type="text" id="msgIpt" class="msgIpt">
             <button id="sendBtn" class="sendBtn">发送</button>
         </div>
         <div class="brick large">
             <span>
-                <video id="me" autoplay></video>
+                <video id="me" controls="controls" autoplay></video>
             </span>
         </div>
     </div>

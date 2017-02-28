@@ -10,6 +10,22 @@ var files = document.getElementById("files");
 var rtc = SkyRTC();
 
 /**********************************************************/
+$('#msgIpt').keypress(function(e){
+    var curKey = e.which;
+    if(curKey == 13)
+    {
+        var msgIpt = document.getElementById("msgIpt"),
+            msg = msgIpt.value,
+            p = document.createElement("p");
+        p.innerText = "me: " + msg;
+        //广播消息
+        rtc.broadcast(msg);
+        msgIpt.value = "";
+        msgs.appendChild(p);
+        $("#msgs").scrollTop($("#msgs")[0].scrollHeight);
+    }
+});
+
 sendBtn.onclick = function(event){
     var msgIpt = document.getElementById("msgIpt"),
         msg = msgIpt.value,
@@ -19,6 +35,7 @@ sendBtn.onclick = function(event){
     rtc.broadcast(msg);
     msgIpt.value = "";
     msgs.appendChild(p);
+    $("#msgs").scrollTop($("#msgs")[0].scrollHeight);
 };
 
 sendFileBtn.onclick = function(event){
@@ -45,7 +62,7 @@ rtc.on('send_file', function(sendId, socketId, file){
     var p = document.createElement("p");
     p.innerText = "请求发送" + file.name + "文件";
     p.id = "sf-" + sendId;
-    files.appendChild(p);
+    msgs.appendChild(p);
 });
 //文件发送成功
 rtc.on('sended_file', function(sendId, socketId, file){
@@ -83,7 +100,7 @@ rtc.on('receive_file_ask', function(sendId, socketId, fileName, fileSize){
         p = document.createElement("p");
         p.innerText = "准备接收" + fileName + "文件";
         p.id = "rf-" + sendId;
-        files.appendChild(p);
+        msgs.appendChild(p);
     } else {
         rtc.sendFileRefuse(sendId);
     }
@@ -123,6 +140,7 @@ rtc.on('pc_add_stream', function(stream, socketId) {
         id = "other-" + socketId;
     newVideo.setAttribute("class", "other");
     newVideo.setAttribute("autoplay", "autoplay");
+    newVideo.setAttribute("controls", "controls");
     newVideo.setAttribute("id", id);
 
     newSpan.appendChild(newVideo);
@@ -135,7 +153,7 @@ rtc.on('pc_add_stream', function(stream, socketId) {
 rtc.on('remove_peer', function(socketId) {
     var video = document.getElementById('other-' + socketId);
     if(video){
-        video.parentNode.parentNode.removeChild(video.parentNode);
+        video.parentNode.parentNode.parentNode.removeChild(video.parentNode.parentNode);
     }
 });
 //接收到文字信息
