@@ -106,7 +106,7 @@ app.get('/', function(req, res) {
 
 app.get('/room', function(req, res) {
     if(haveLogined(req.session.user)){
-        res.render('room');
+        res.render('room',{username:req.session.user.username});
     }else{
         res.redirect('/');
     }
@@ -114,7 +114,15 @@ app.get('/room', function(req, res) {
 
 app.get('/roomList', function (req, res) {
     if(haveLogined(req.session.user)){
-        res.render('roomList',{roomList:SkyRTC.rtc.rooms});
+        res.render('roomList',{roomList:SkyRTC.rtc.rooms,username:req.session.user.username});
+    }else{
+        res.redirect('/');
+    }
+});
+
+app.get('/contact', function (req, res) {
+    if(haveLogined(req.session.user)){
+        res.render('contact',{username:req.session.user.username});
     }else{
         res.redirect('/');
     }
@@ -146,6 +154,11 @@ app.post('/login', function (req, res) {
     });
 });
 
+app.get('/logout', function (req, res) {
+    req.session.user = undefined;
+    res.redirect('/');
+});
+
 app.get('/addAdmin', function (req, res) {
     res.render('addAdmin');
 });
@@ -166,6 +179,14 @@ app.post('/addAdmin', function (req, res) {
     });
 });
 
+app.get('/admin', function (req, res) {
+    if(isAdmin()){
+        res.render('admin/index');
+    }else{
+        res.redirect('/');
+    }
+});
+
 app.post('/connectSuccess', function (req, res) {
     for(var room in SkyRTC.rtc.rooms){
         for(var i=0; i<SkyRTC.rtc.rooms[room].length;i++){
@@ -178,6 +199,10 @@ app.post('/connectSuccess', function (req, res) {
     res.write("success");
     res.end();
 });
+
+var isAdmin = function () {
+    return true;
+};
 
 //判断用户是否登陆
 var haveLogined = function (user) {

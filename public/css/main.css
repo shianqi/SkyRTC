@@ -7,26 +7,24 @@ html, body {
 }
 
 #videos {
-    position: absolute;
-    left: 30%;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
+    width: 100%;
+    height:100%;
 }
 
 #videos video {
     display: inline-block;
-    width: 32%;
+    width: 100%;
 }
 
 #chat {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 30%;
-    border: 1px solid #0f0f0f;
+    top: 50px;
+    height: 580px;
+    width: 280px;
+    background: rgba(0,0,0,0.8);
+}
+
+#fileIpt, .sendFileBtn{
+    /*display: none;*/
 }
 #chat .msgIpt, #chat .fileIpt{
     position: absolute;
@@ -62,4 +60,31 @@ html, body {
 #files .percent {
     font-weight: bold;
     text-decoration: none
+}
+
+.gridly {
+    position: relative;
+    width: 100%;
+}
+
+.brick{
+    overflow: hidden;
+    display: table;
+}
+
+.brick.small {
+    background: #000;
+    width: 280px;
+    height: 280px;
+}
+.brick.large {
+    background: #fc3;
+    width: 580px;
+    height: 580px;
+}
+
+.brick span{
+    display: table-cell;
+    overflow: hidden;
+    vertical-align: middle;
 }

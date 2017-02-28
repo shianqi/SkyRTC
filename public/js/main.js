@@ -114,19 +114,28 @@ rtc.on("stream_create_error", function() {
 });
 //接收到其他用户的视频流
 rtc.on('pc_add_stream', function(stream, socketId) {
+    var newDiv = document.createElement("div");
+    newDiv.setAttribute("class","brick small");
+
+    var newSpan = document.createElement("span");
+
     var newVideo = document.createElement("video"),
         id = "other-" + socketId;
     newVideo.setAttribute("class", "other");
     newVideo.setAttribute("autoplay", "autoplay");
     newVideo.setAttribute("id", id);
-    videos.appendChild(newVideo);
+
+    newSpan.appendChild(newVideo);
+    newDiv.appendChild(newSpan)
+    videos.appendChild(newDiv);
     rtc.attachStream(stream, id);
+    $('.gridly').gridly('layout');
 });
 //删除其他用户
 rtc.on('remove_peer', function(socketId) {
     var video = document.getElementById('other-' + socketId);
     if(video){
-        video.parentNode.removeChild(video);
+        video.parentNode.parentNode.removeChild(video.parentNode);
     }
 });
 //接收到文字信息
