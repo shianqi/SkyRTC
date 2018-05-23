@@ -2,9 +2,8 @@
   "name": "SkyRTC-demo",
   "description": "A simple SkyRTC demo",
   "scripts": {
-    "start": "npm run mongod && npm run server",
-    "server": "node server.js",
-    "mongod": "mongod --dbpath D://mongodb"
+    "start": "npm run server",
+    "server": "node server.js"
   },
   "dependencies": {
     "bluebird": "^3.4.6",
